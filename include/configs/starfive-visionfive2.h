@@ -180,6 +180,29 @@
 	"fdt set /soc/ethernet@16040000/ethernet-phy@1 tx_inverted_1000 <0x0>;"	\
 	"fdt set /soc/ethernet@16040000/ethernet-phy@1 tx_delay_sel <0x9> \0"
 
+#define CHIPA_GMAC_SET_NEW	\
+	"chipa_gmac_set_new="	\
+	"fdt rm /soc/ethernet@16030000 starfive,tx-use-rgmii-clk;"				\
+	"fdt rm /soc/ethernet@16030000 assigned-clocks;"					\
+	"fdt rm /soc/ethernet@16030000 assigned-clock-parents;"					\
+	"fdt rm /soc/ethernet@16030000/mdio/ethernet-phy@0 motorcomm,tx-clk-adj-enabled;"	\
+	"fdt rm /soc/ethernet@16030000/mdio/ethernet-phy@0 motorcomm,tx-clk-100-inverted;"	\
+	"fdt rm /soc/ethernet@16030000/mdio/ethernet-phy@0 motorcomm,tx-clk-1000-inverted;"	\
+	"fdt rm /soc/ethernet@16030000/mdio/ethernet-phy@0 motorcomm,rx-clk-drv-microamp;"	\
+	"fdt rm /soc/ethernet@16030000/mdio/ethernet-phy@0 motorcomm,rx-data-drv-microamp;"	\
+	"fdt set /soc/ethernet@16030000/mdio/ethernet-phy@0 rx-internal-delay-ps <1900>;"	\
+	"fdt set /soc/ethernet@16030000/mdio/ethernet-phy@0 tx-internal-delay-ps <1350>;"	\
+	"fdt rm /soc/ethernet@16040000 starfive,tx-use-rgmii-clk;"				\
+	"fdt set /soc/ethernet@16040000 phy-mode \"rmii\";"					\
+	"fdt set /soc/ethernet@16040000 assigned-clocks <0x00000003 0x00000069 0x00000003 0x00000067>;"	\
+	"fdt set /soc/ethernet@16040000 assigned-clock-parents <0x00000003 0x00000065 0x00000003 0x00000065>;"	\
+	"fdt rm /soc/ethernet@16040000/mdio/ethernet-phy@1 motorcomm,tx-clk-adj-enabled;"	\
+	"fdt rm /soc/ethernet@16040000/mdio/ethernet-phy@1 motorcomm,tx-clk-100-inverted;"	\
+	"fdt rm /soc/ethernet@16040000/mdio/ethernet-phy@1 motorcomm,rx-clk-drv-microamp;"	\
+	"fdt rm /soc/ethernet@16040000/mdio/ethernet-phy@1 motorcomm,rx-data-drv-microamp;"	\
+	"fdt rm /soc/ethernet@16040000/mdio/ethernet-phy@1 rx-internal-delay-ps;"		\
+	"fdt rm /soc/ethernet@16040000/mdio/ethernet-phy@1 tx-internal-delay-ps; \0"
+
 #define VISIONFIVE2_MEM_SET	\
 	"visionfive2_mem_set="	\
 	"fdt memory ${memory_addr} ${memory_size};" \
@@ -187,8 +210,19 @@
 
 #define CHIPA_SET	\
 	"chipa_set="				\
-	"if test ${chip_vision} = A; then "	\
-		"run chipa_gmac_set;"		\
+	"if test ${chip_vision} = A; then "					\
+		"fdt get name gmac1_subnode_name /soc/ethernet@16040000 0;"	\
+		"if test ${gmac1_subnode_name} = mdio; then "			\
+			"setenv gmac_conf_new 1;"				\
+		"else "								\
+			"setenv gmac_conf_new 0;"				\
+		"fi; "								\
+		"setenv gmac1_subnode_name;"					\
+		"if test ${gmac_conf_new} = 0; then "				\
+			"run chipa_gmac_set;"					\
+		"else "								\
+			"run chipa_gmac_set_new;"				\
+		"fi; "								\
 	"fi; \0"				\
 	"chipa_set_uboot="			\
 	"fdt addr ${uboot_fdt_addr};"		\
@@ -326,6 +360,7 @@
 	JH7110_SDK_BOOTENV				\
 	JH7110_DISTRO_BOOTENV				\
 	CHIPA_GMAC_SET					\
+	CHIPA_GMAC_SET_NEW				\
 	CHIPA_SET					\
 	CPU_VOL_1020_SET				\
 	CPU_VOL_1040_SET				\
