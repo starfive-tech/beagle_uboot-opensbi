@@ -169,13 +169,11 @@
 
 #define CHIPA_GMAC_SET \
 	"chipa_gmac_set="	\
-	"fdt set /soc/ethernet@16030000/ethernet-phy@0 tx_inverted_10 <0x1>;"	\
-	"fdt set /soc/ethernet@16030000/ethernet-phy@0 tx_inverted_100 <0x1>;"	\
-	"fdt set /soc/ethernet@16030000/ethernet-phy@0 tx_inverted_1000 <0x1>;\0"
+	"echo JH7110 Devkits never supports chip A;\0"
 
 #define CHIPA_SET	\
 	"chipa_set="				\
-	"if test ${chip_vision} = B; then "	\
+	"if test ${chip_vision} = A; then "	\
 		"run chipa_gmac_set;"		\
 	"fi; \0"				\
 	"chipa_set_uboot="			\

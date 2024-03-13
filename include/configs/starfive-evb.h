@@ -177,8 +177,17 @@
 
 #define CHIPA_SET	\
 	"chipa_set="				\
-	"if test ${chip_vision} = B; then "	\
-		"run chipa_gmac_set;"		\
+	"if test ${chip_vision} = B; then "					\
+		"fdt get name gmac1_subnode_name /soc/ethernet@16040000 0;"	\
+		"if test ${gmac1_subnode_name} = mdio; then "			\
+			"setenv gmac_conf_new 1;"				\
+		"else "								\
+			"setenv gmac_conf_new 0;"				\
+		"fi; "								\
+		"setenv gmac1_subnode_name;"					\
+		"if test ${gmac_conf_new} = 0; then "				\
+			"run chipa_gmac_set;"					\
+		"fi; "								\
 	"fi; \0"				\
 	"chipa_set_uboot="			\
 	"fdt addr ${fdtcontroladdr};"		\
