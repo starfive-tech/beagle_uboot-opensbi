@@ -3,6 +3,8 @@
 
 #include <dm.h>
 #include <spl.h>
+#include <asm/csr.h>
+#include <asm/arch-dubhe/csr.h>
 
 int spl_board_init_f(void)
 {
@@ -26,5 +28,25 @@ void board_boot_order(u32 *spl_boot_list)
 
 int board_fit_config_name_match(const char *name)
 {
-	return 0;
+	char config_name[8];
+	u32 marchid;
+
+	marchid = csr_read(CSR_MARCHID);
+
+	switch (marchid) {
+	case DUBHE90_MARCHID:
+		sprintf(config_name, "conf-%s", "90");
+		return strcmp(name, config_name);
+
+	case DUBHE80_MARCHID:
+		sprintf(config_name, "conf-%s", "80");
+		return strcmp(name, config_name);
+
+	case DUBHE70_MARCHID:
+		sprintf(config_name, "conf-%s", "70");
+		return strcmp(name, config_name);
+
+	default:
+		return 0;
+	}
 }
