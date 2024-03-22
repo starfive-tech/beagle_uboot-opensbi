@@ -10,8 +10,7 @@ dtb-$(CONFIG_TARGET_SIPEED_MAIX) += k210-maix-bit.dtb
 dtb-$(CONFIG_TARGET_STARFIVE_VISIONFIVE2) += jh7110-starfive-visionfive-2.dtb
 dtb-$(CONFIG_TARGET_TH1520_LPI4A) += th1520-lichee-pi-4a.dtb
 include $(srctree)/scripts/Makefile.dts
-dtb-$(CONFIG_TARGET_STARFIVE_DUBHE_FPGA) += dubhe_fpga.dtb
-dtb-$(CONFIG_TARGET_STARFIVE_DUBHE_FPGA) += $(shell echo $(CONFIG_DEFAULT_DEVICE_TREE)).dtb
+dtb-$(CONFIG_TARGET_STARFIVE_DUBHE_FPGA) += dubhe90_fpga.dtb dubhe80_fpga.dtb dubhe70_fpga.dtb
 
 targets += $(dtb-y)
 
