@@ -39,6 +39,103 @@
 			bootph-pre-ram;
 		};
 	};
+
+	binman: binman	{
+		multiple-images;
+
+		uboot_fit {
+			filename = "u-boot.itb";
+
+			fit {
+				description = "Configuration to load OpenSBI before U-Boot";
+				#address-cells = <1>;
+				fit,fdt-list = "of-list";
+
+				images {
+					uboot {
+						description = "U-Boot";
+						type = "standalone";
+						os = "U-Boot";
+						arch = "riscv";
+						compression = "none";
+						load = <CONFIG_TEXT_BASE>;
+
+						uboot_blob: blob-ext {
+							filename = "u-boot-nodtb.bin";
+						};
+					};
+
+					opensbi {
+						description = "OpenSBI fw_dynamic Firmware";
+						type = "firmware";
+						os = "opensbi";
+						arch = "riscv";
+						compression = "none";
+						load = <CONFIG_SPL_OPENSBI_LOAD_ADDR>;
+						entry = <CONFIG_SPL_OPENSBI_LOAD_ADDR>;
+
+						opensbi_blob: opensbi {
+							filename = "fw_dynamic.bin";
+						};
+					};
+
+					fdt-90 {
+						description = "U-Boot proper device tree binary";
+						type = "flat_dt";
+						arch = "riscv";
+						compression = "none";
+						fdt_90_blob: blob-ext {
+							filename = "arch/riscv/dts/dubhe90_fpga.dtb";
+						};
+					};
+
+					fdt-80 {
+						description = "U-Boot proper device tree binary";
+						type = "flat_dt";
+						arch = "riscv";
+						compression = "none";
+						fdt_80_blob: blob-ext {
+							filename = "arch/riscv/dts/dubhe80_fpga.dtb";
+						};
+					};
+
+					fdt-70 {
+						description = "U-Boot proper device tree binary";
+						type = "flat_dt";
+						arch = "riscv";
+						compression = "none";
+						fdt_70_blob: blob-ext {
+							filename = "arch/riscv/dts/dubhe70_fpga.dtb";
+						};
+					};
+				};
+
+				configurations {
+					default = "conf-90";
+					conf-90 {
+						description = "conf-90";
+						firmware = "opensbi";
+						loadables = "uboot";
+						fdt = "fdt-90";
+					};
+
+					conf-80 {
+						description = "conf-80";
+						firmware = "opensbi";
+						loadables = "uboot";
+						fdt = "fdt-80";
+					};
+
+					conf-70 {
+						description = "conf-70";
+						firmware = "opensbi";
+						loadables = "uboot";
+						fdt = "fdt-70";
+					};
+				};
+			};
+		};
+	};
 };
 
 &clint {
