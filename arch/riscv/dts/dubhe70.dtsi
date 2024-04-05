@@ -3,6 +3,10 @@
 
 #include "dubhe.dtsi"
 
+/ {
+	compatible = "starfive,dubhe-70";
+};
+
 &cpu0 {
 	compatible = "starfive,dubhe-70", "riscv";
 	riscv,isa = "rv64imafdcbh_zba_zbb_zbc_zbs_zicntr_zicsr_zifencei_zihintpause_zihpm_sscofpmf";
