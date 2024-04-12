@@ -641,8 +641,10 @@ static int sf_display_init(struct udevice *dev, ulong fbbase, ofnode ep_node)
 		}
 #endif
 
+#if CONFIG_IS_ENABLED(TARGET_STARFIVE_EVB)
+		writel(0xc0001fff, priv->regs_hi+0x00000014); //csr_reg//dc interrupt
+#endif
 #if CONFIG_IS_ENABLED(TARGET_STARFIVE_EVB) || CONFIG_IS_ENABLED(TARGET_STARFIVE_VISIONFIVE2)
-		writel(0xc0001fff, priv->regs_hi+0x00000014); //csr_reg
 		writel(0x000000e8, priv->regs_hi+0x00001a38); //csr_reg
 		writel(0x00002000, priv->regs_hi+0x00001cc0); //csr_reg
 		writel(0x00000000, priv->regs_hi+0x000024d8); //csr_reg
@@ -694,7 +696,6 @@ static int sf_display_init(struct udevice *dev, ulong fbbase, ofnode ep_node)
 #else
 		if(uc_priv->xsize == 800)
 		{
-			writel(0xc0001fff, priv->regs_hi+0x00000014); //csr_reg
 			writel(0x000000e8, priv->regs_hi+0x00001a38); //csr_reg
 			writel(0x00002000, priv->regs_hi+0x00001cc0); //csr_reg
 			writel(0x00000000, priv->regs_hi+0x000024d8); //csr_reg
