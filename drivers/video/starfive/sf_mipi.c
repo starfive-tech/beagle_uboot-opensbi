@@ -568,6 +568,45 @@ free_clock_apb_clk:
 	return ret;
 }
 
+static int dsi_sf_remove(struct udevice *dev)
+{
+	struct dsi_sf_priv *priv = dev_get_priv(dev);
+	struct mipi_dsi_device *device = &priv->device;
+	struct dsi_sf_priv *dsi = dev_get_priv(dev);
+	uint32_t val;
+
+	sf_dphy_set_reg(dsi->sys_reg, 0,AON_GP_REG_SHIFT,AON_GP_REG_MASK);
+
+	/*dphy*/
+	reset_assert(&priv->txbytehs_rst);//sys_mipi_dsi_set_ppi_txbyte_hs(0, priv_data);
+	reset_assert(&priv->dphy_sys);
+
+	reset(1, priv->phy_reg);
+
+	clk_disable(&priv->dphy_txesc_clk);
+
+	/*dsi*/
+	reset_assert(&priv->dpi_rst);
+
+	reset_assert(&priv->rxesc_rst);
+
+	reset_assert(&priv->txesc_rst);
+
+	reset_assert(&priv->apb_rst);
+
+	reset_assert(&priv->sys_rst);
+
+	clk_disable(&priv->dpi_clk);
+
+	clk_disable(&priv->txesc_clk);
+
+	clk_disable(&priv->apb_clk);
+
+	clk_disable(&priv->dsi_sys_clk);
+
+	return 0;
+}
+
 struct video_bridge_ops sf_dsi_bridge_ops = {
 	.attach = dsi_sf_attach,
 	.set_backlight = dsi_sf_set_backlight,
@@ -585,6 +624,8 @@ U_BOOT_DRIVER(starfive_mipi_dsi) = {
 	.bind	= dm_scan_fdt_dev,
 	.of_to_plat = sf_mipi_of_to_plat,
 	.probe	= dsi_sf_probe,
+	.remove  = dsi_sf_remove,
 	.ops	= &sf_dsi_bridge_ops,
 	.priv_auto	  = sizeof(struct dsi_sf_priv),
+	.flags = DM_FLAG_OS_PREPARE,
 };
