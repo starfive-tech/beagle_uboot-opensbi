@@ -2046,7 +2046,7 @@ static const struct udevice_id eqos_ids[] = {
 	},
 #endif
 	{
-		.compatible = "starfive,dubhe-eqos-5.20",
+		.compatible = "starfive,dubhe-dwmac",
 		.data = (ulong)&eqos_dubhe_config
 	},
 #endif
