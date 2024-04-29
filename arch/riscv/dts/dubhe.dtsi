@@ -8,70 +8,10 @@
 	#size-cells = <2>;
 	compatible = "starfive,dubhe";
 
-	cpus {
-		#address-cells = <1>;
-		#size-cells = <0>;
-
-		cpu0: cpu@0 {
-			compatible = "starfive,dubhe", "riscv";
-			device_type = "cpu";
-			mmu-type = "riscv,sv48";
-			reg = <0x0>;
-			riscv,isa = "rv64imafdcbh_sscofpmf";
-			tlb-split;
-
-			cpu0_intc: interrupt-controller {
-				#interrupt-cells = <1>;
-				compatible = "riscv,cpu-intc";
-				interrupt-controller;
-			};
-		};
-
-		cpu1: cpu@1 {
-			compatible = "starfive,dubhe", "riscv";
-			device_type = "cpu";
-			mmu-type = "riscv,sv48";
-			reg = <0x1>;
-			riscv,isa = "rv64imafdcbh_sscofpmf";
-			tlb-split;
-
-			cpu1_intc: interrupt-controller {
-				#interrupt-cells = <1>;
-				compatible = "riscv,cpu-intc";
-				interrupt-controller;
-			};
-		};
-
-		cpu-map {
-			cluster0 {
-				core0 {
-					cpu = <&cpu0>;
-				};
-
-				core1 {
-					cpu = <&cpu1>;
-				};
-			};
-		};
-
-		l2_cache0: cache-controller-0 {
-			compatible = "cache";
-			cache-block-size = <64>;
-			cache-level = <2>;
-			cache-unified;
-		};
-
-		l2_cache1: cache-controller-1 {
-			compatible = "cache";
-			cache-block-size = <64>;
-			cache-level = <2>;
-			cache-unified;
-		};
-	};
-
 	pmu {
 		compatible = "riscv,pmu";
-		interrupts-extended = <&cpu0_intc 13>, <&cpu1_intc 13>;
+		interrupts-extended = <&cpu0_intc 13>, <&cpu1_intc 13>,
+				      <&cpu2_intc 13>, <&cpu3_intc 13>;
 		riscv,event-to-mhpmevent = <0x00005 0x0000 0xA>,
 					   <0x00006 0x0000 0xB>,
 					   <0x00008 0x0000 0x10>,
@@ -123,7 +63,11 @@
 			interrupts-extended = <&cpu0_intc 3>,
 					      <&cpu0_intc 7>,
 					      <&cpu1_intc 3>,
-					      <&cpu1_intc 7>;
+					      <&cpu1_intc 7>,
+					      <&cpu2_intc 3>,
+					      <&cpu2_intc 7>,
+					      <&cpu3_intc 3>,
+					      <&cpu3_intc 7>;
 		};
 
 		pbus_clk: subsystem_pbus_clock {
@@ -137,13 +81,16 @@
 			#interrupt-cells = <1>;
 			compatible = "riscv,plic0";
 			reg = <0x0 0xc000000 0x0 0x4000000>;
-			riscv,max-priority = <15>;
 			riscv,ndev = <25>;
 			interrupt-controller;
 			interrupts-extended = <&cpu0_intc 11>,
 					      <&cpu0_intc 9>,
 					      <&cpu1_intc 11>,
-					      <&cpu1_intc 9>;
+					      <&cpu1_intc 9>,
+					      <&cpu2_intc 11>,
+					      <&cpu2_intc 9>,
+					      <&cpu3_intc 11>,
+					      <&cpu3_intc 9>;
 		};
 
 		spi0: spi@10000000 {
@@ -184,22 +131,20 @@
 			snps,blen = <256 128 64 32 0 0 0>;
 		};
 
-		gmac0: gmac0@10100000 {
-			compatible = "starfive,dubhe-eqos-5.20";
+		gmac0: gmac@10100000 {
+			compatible = "starfive,dubhe-dwmac","snps,dwmac-5.20";
 			reg = <0x0 0x10100000 0x0 0x10000>;
 			clock-names = "gtx",
 				"tx",
 				"ptp_ref",
 				"stmmaceth",
-				"pclk",
-				"gtxc";
+				"pclk";
 			interrupt-parent = <&plic0>;
-			interrupts = <8>, <11>, <12> ;
+			interrupts = <8>, <11>, <12>;
 			interrupt-names = "macirq", "eth_wake_irq", "eth_lpi";
 			max-frame-size = <1500>;
-			phy-mode = "rgmii-id";
 			snps,multicast-filter-bins = <64>;
-			snps,perfect-filter-entries = <128>;
+			snps,perfect-filter-entries = <8>;
 			rx-fifo-depth = <2048>;
 			tx-fifo-depth = <2048>;
 			snps,fixed-burst;

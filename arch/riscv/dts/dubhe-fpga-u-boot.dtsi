@@ -139,7 +139,12 @@
 };
 
 &clint {
+	clocks = <&pbus_clk>;
 	bootph-pre-ram;
+};
+
+&gmac0 {
+	mac-address = [de ad be ef de ad];
 };
 
 &pbus_clk {
@@ -171,11 +176,6 @@
 };
 
 &pbus_clk {
-	bootph-pre-ram;
-};
-
-&clint {
-	clocks = <&pbus_clk>;
 	bootph-pre-ram;
 };
 
