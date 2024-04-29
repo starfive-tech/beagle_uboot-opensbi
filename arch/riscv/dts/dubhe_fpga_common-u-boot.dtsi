@@ -2,6 +2,11 @@
 /* Copyright (c) 2021 StarFive Technology Co., Ltd. */
 
 / {
+
+	aliases {
+		spi0 = &qspi1;
+	};
+
 	chosen {
 		stdout-path = "serial0";
 		bootph-pre-ram;
@@ -19,6 +24,14 @@
 		};
 
 		cpu@1 {
+			bootph-pre-ram;
+		};
+
+		cpu@2 {
+			bootph-pre-ram;
+		};
+
+		cpu@3 {
 			bootph-pre-ram;
 		};
 	};
@@ -157,7 +170,7 @@
 
 &spi0 {
 	bootph-pre-ram;
-	
+
 	mmc@0 {
 		bootph-pre-ram;
 	};
@@ -182,3 +195,16 @@
 &cpu0_intc {
 	bootph-pre-ram;
 };
+
+&cpu1_intc {
+	bootph-pre-ram;
+};
+
+&cpu2_intc {
+	bootph-pre-ram;
+};
+
+&cpu3_intc {
+	bootph-pre-ram;
+};
+

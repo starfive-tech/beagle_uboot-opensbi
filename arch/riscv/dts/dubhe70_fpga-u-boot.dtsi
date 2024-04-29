@@ -1,0 +1,20 @@
+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+/* Copyright (c) 2024 StarFive Technology Co., Ltd. */
+
+#include "dubhe_fpga_common-u-boot.dtsi"
+
+&cpu0 {
+	riscv,isa = "rv64imafdch_zba_zbb_zbc_zbs_zicbom_zicbop_zicboz_zicntr_zicond_zicsr_zifencei_zihintpause_zihpm_sscofpmf_svinval_svnapot_svpbmt";
+};
+
+&cpu1 {
+	riscv,isa = "rv64imafdch_zba_zbb_zbc_zbs_zicbom_zicbop_zicboz_zicntr_zicond_zicsr_zifencei_zihintpause_zihpm_sscofpmf_svinval_svnapot_svpbmt";
+};
+
+&cpu2 {
+	riscv,isa = "rv64imafdch_zba_zbb_zbc_zbs_zicbom_zicbop_zicboz_zicntr_zicond_zicsr_zifencei_zihintpause_zihpm_sscofpmf_svinval_svnapot_svpbmt";
+};
+
+&cpu3 {
+	riscv,isa = "rv64imafdch_zba_zbb_zbc_zbs_zicbom_zicbop_zicboz_zicntr_zicond_zicsr_zifencei_zihintpause_zihpm_sscofpmf_svinval_svnapot_svpbmt";
+};
