@@ -1,0 +1,18 @@
+// SPDX-License-Identifier: GPL-2.0 OR MIT
+/*
+ * Copyright (C) 2022 StarFive Technology Co., Ltd.
+ */
+
+#if defined(CONFIG_TARGET_STARFIVE_VISIONFIVE2)
+#include "starfive_visionfive2-u-boot.dtsi"
+#endif
+#if defined(CONFIG_TARGET_STARFIVE_DEVKITS)
+#include "starfive_devkits-u-boot.dtsi"
+#endif
+
+/ {
+	config {
+		amp,rtos-offset = <0x330000>;
+		amp,rtos-code-base = <0x6e800000>;
+	};
+};

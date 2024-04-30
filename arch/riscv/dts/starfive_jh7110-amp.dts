@@ -1,0 +1,101 @@
+// SPDX-License-Identifier: GPL-2.0 OR MIT
+/*
+ * Copyright (C) 2022 StarFive Technology Co., Ltd.
+ */
+
+/dts-v1/;
+#if defined(CONFIG_TARGET_STARFIVE_VISIONFIVE2)
+#include "starfive_visionfive2.dts"
+#endif
+#if defined(CONFIG_TARGET_STARFIVE_DEVKITS)
+#include "starfive_devkits.dts"
+#endif
+
+/ {
+	chosen {
+		opensbi-domains {
+			compatible = "opensbi,domain,config";
+
+			rpmsg_shmem: rpmsg_shmem {
+				compatible = "opensbi,domain,memregion";
+				base = <0x0 0x6e400000>;
+				order = <22>;
+			};
+
+			rtcode: rtcode {
+				compatible = "opensbi,domain,memregion";
+				base = <0x0 0x6e800000>;
+				order = <23>;
+			};
+
+			rtheap: rtheap {
+				compatible = "opensbi,domain,memregion";
+				base = <0x0 0x6f000000>;
+				order = <24>;
+			};
+
+			dram0: dram0 {
+				compatible = "opensbi,domain,memregion";
+				base = <0x0 0x40000000>;
+				order = <30>;
+			};
+
+			dram1: dram1 {
+				compatible = "opensbi,domain,memregion";
+				base = <0x0 0x80000000>;
+				order = <31>;
+			};
+
+			allmem: allmem {
+				compatible = "opensbi,domain,memregion";
+				base = <0x0 0x0>;
+				order = <64>;
+			};
+
+			udomain: u-domain {
+				compatible = "opensbi,domain,instance";
+				possible-harts = <&cpu0 &cpu1 &cpu2 &cpu3>;
+				regions = <&rtcode 0x0>, <&rtheap 0x0>, <&allmem 0x3f>;
+				next-addr = <0x0 0x40200000>;
+				boot-hart = <&cpu1>;
+				system-reset-allowed;
+				system-suspend-allowed;
+			};
+
+			rtdomain: rt-domain {
+				compatible = "opensbi,domain,instance";
+				possible-harts = <&cpu4>;
+				regions = <&rpmsg_shmem 0x3f>, <&rtcode 0x3f>, <&rtheap 0x3f>,
+					<&dram1 0x0>, <&allmem 0x3f>;
+				boot-hart = <&cpu4>;
+				next-arg1 = <0x0 0x0>;
+				next-addr = <0x0 0x6e800000>;
+				next-mode = <0x1>;
+			};
+		};
+	};
+};
+
+&cpu0 {
+	opensbi-domain = <&udomain>;
+};
+
+&cpu1 {
+	opensbi-domain = <&udomain>;
+};
+
+&cpu2 {
+	opensbi-domain = <&udomain>;
+};
+
+&cpu3 {
+	opensbi-domain = <&udomain>;
+};
+
+&cpu4 {
+	opensbi-domain = <&rtdomain>;
+};
+
+&gmac1 {
+	status = "disabled";
+};
