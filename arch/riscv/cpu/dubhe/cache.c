@@ -4,7 +4,7 @@
 #include <common.h>
 #include <asm/sbi.h>
 
-#define SBI_EXT_CACHE	0x09057485
+#define SBI_EXT_CACHE	0x0900067e
 
 enum sbi_ext_cache_fid {
 	SBI_EXT_BASE_L2_FLUSH = 0,
