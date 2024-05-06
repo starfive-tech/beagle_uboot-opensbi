@@ -1712,20 +1712,6 @@ static phy_interface_t eqos_get_interface_tegra186(const struct udevice *dev)
 	return PHY_INTERFACE_MODE_MII;
 }
 
-static phy_interface_t eqos_get_interface_jh7110(const struct udevice *dev)
-{
-	const char *phy_mode;
-	phy_interface_t interface = PHY_INTERFACE_MODE_NA;
-
-	debug("%s(dev=%p):\n", __func__, dev);
-
-	phy_mode = fdt_getprop(gd->fdt_blob, dev_of_offset(dev), "phy-mode", NULL);
-	if (phy_mode)
-		interface = dev_read_phy_mode(dev);
-
-	return interface;
-}
-
 static int eqos_remove_resources_tegra186(struct udevice *dev)
 {
 	struct eqos_priv *eqos = dev_get_priv(dev);
@@ -2008,7 +1994,7 @@ struct eqos_config __maybe_unused eqos_dubhe_config = {
 	.config_mac = EQOS_MAC_RXQ_CTRL0_RXQ0EN_ENABLED_DCB,
 	.config_mac_mdio = EQOS_MAC_MDIO_ADDRESS_CR_250_300,
 	.axi_bus_width = EQOS_AXI_WIDTH_64,
-	.interface = eqos_get_interface_jh7110,
+	.interface = dev_read_phy_mode,
 	.ops = &eqos_dubhe_ops
 };
 
