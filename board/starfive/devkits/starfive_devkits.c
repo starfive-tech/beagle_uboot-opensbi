@@ -28,6 +28,8 @@
 #define SYS_CLOCK_ENABLE(clk) \
 	setbits_le32(SYS_CRG_BASE + clk, CLK_ENABLE_MASK)
 
+DECLARE_GLOBAL_DATA_PTR;
+
 #define CPU_VOL_BINNING_OFFSET 0x7fc
 enum {
 	BOOT_FLASH =	0,
@@ -372,7 +374,9 @@ err:
 int board_late_init(void)
 {
 	struct udevice *dev;
-	int ret;
+	int ret, offset;
+	u8 mac0[6], mac1[6];
+	u64 share_ram_addr;
 
 	get_boot_mode();
 
@@ -394,8 +398,22 @@ int board_late_init(void)
 	if (ret)
 		goto err;
 
+	/* AMP case : write MAC to share ram */
+	offset = fdt_path_offset(gd->fdt_blob,
+				 "/chosen/opensbi-domains/rpmsg_shmem");
+	if (offset >= 0) {
+		share_ram_addr =
+			fdtdec_get_uint64(gd->fdt_blob, offset, "base", 0);
+		if (share_ram_addr) {
+			eth_env_get_enetaddr("eth0addr", mac0);
+			eth_env_get_enetaddr("eth1addr", mac1);
+			memcpy((void *)share_ram_addr, mac0, 6);
+			memcpy((void *)(share_ram_addr + 8), mac1, 6);
+		}
+	}
+
 err:
-		return 0;
+	return 0;
 
 }
 
