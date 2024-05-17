@@ -18,6 +18,8 @@
 
 #define MODE_SELECT_REG		0x1702002c
 
+DECLARE_GLOBAL_DATA_PTR;
+
 int spl_board_init_f(void)
 {
 	int ret;
@@ -163,4 +165,37 @@ int board_fit_config_name_match(const char *name)
 }
 #endif
 
+static void spl_enable_uart2(void)
+{
+	/* uart2 clock */
+	setbits_le32(SYS_CRG_BASE + CLK_UART2_APB_OFFSET, BIT(31));
+	setbits_le32(SYS_CRG_BASE + CLK_UART2_CORE_OFFSET, BIT(31));
+	clrsetbits_le32(SYS_CRG_BASE + CLK_RSTN_3_OFFSET, BIT(23) | BIT(24), 0);
 
+	/*uart2 tx*/
+	SYS_IOMUX_DOEN(45, LOW);
+	SYS_IOMUX_DOUT(45, 0x4f);
+	SYS_IOMUX_SET_DS(45, 3);
+	/*uart2 rx*/
+	SYS_IOMUX_DOEN(46, HIGH);
+	SYS_IOMUX_DOUT(46, 0);
+	SYS_IOMUX_DIN(46, 62);
+}
+
+void spl_perform_fixups(struct spl_image_info *spl_image)
+{
+	unsigned long rtos_offset, rtos_image_addr;
+	unsigned long rtos_base;
+
+	rtos_base = fdtdec_get_config_int(gd->fdt_blob,
+					  "amp,rtos-code-base", 0);
+	rtos_offset = fdtdec_get_config_int(gd->fdt_blob,
+					    "amp,rtos-offset", 0);
+
+	if (rtos_base && rtos_offset) {
+		spl_enable_uart2();
+		rtos_image_addr = CONFIG_SPL_OPENSBI_LOAD_ADDR + rtos_offset;
+		memcpy((void *)rtos_base, (void *)(rtos_image_addr),
+		       spl_image->size - rtos_offset);
+	}
+}
