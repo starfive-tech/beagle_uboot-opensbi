@@ -91,6 +91,21 @@ static void jh7110_i2c_init (int id)
 	}
 }
 
+static void jh7110_jtag_init(void)
+{
+	/*jtag*/
+	SYS_IOMUX_DOEN(36, HIGH);
+	SYS_IOMUX_DIN(36, 4);
+	SYS_IOMUX_DOEN(61, HIGH);
+	SYS_IOMUX_DIN(61, 19);
+	SYS_IOMUX_DOEN(63, HIGH);
+	SYS_IOMUX_DIN(63, 20);
+	SYS_IOMUX_DOEN(60, HIGH);
+	SYS_IOMUX_DIN(60, 29);
+	SYS_IOMUX_DOEN(44, 8);
+	SYS_IOMUX_DOUT(44, 22);
+}
+
 static void jh7110_gmac_sel_tx_to_rgmii(int id)
 {
 	switch (id) {
@@ -320,6 +335,7 @@ int board_init(void)
 {
 	enable_caches();
 
+	jh7110_jtag_init();
 	jh7110_timer_init();
 	jh7110_usb_init(true);
 	jh7110_gmac_init(0);
