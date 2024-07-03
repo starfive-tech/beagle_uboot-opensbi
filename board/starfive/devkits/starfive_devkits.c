@@ -409,6 +409,8 @@ int board_late_init(void)
 			eth_env_get_enetaddr("eth1addr", mac1);
 			memcpy((void *)share_ram_addr, mac0, 6);
 			memcpy((void *)(share_ram_addr + 8), mac1, 6);
+			*((u8 *)(share_ram_addr + 16)) = 1; /* chip version B */
+			*((u8 *)(share_ram_addr + 17)) = 0; /* board type */
 		}
 	}
 
