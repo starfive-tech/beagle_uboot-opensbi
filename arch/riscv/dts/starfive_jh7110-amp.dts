@@ -99,3 +99,7 @@
 &gmac1 {
 	status = "disabled";
 };
+
+&pcie1 {
+	status = "disabled";
+};
