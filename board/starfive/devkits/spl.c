@@ -112,6 +112,17 @@ void board_init_f(ulong dummy)
 	clrsetbits_le32(SYS_IOMUX_BASE + 0x274, 0x3, BIT(0) & 0x3);
 	clrsetbits_le32(SYS_IOMUX_BASE + 0x278, 0x3, BIT(0) & 0x3);
 	clrsetbits_le32(SYS_IOMUX_BASE + 0x27c, 0x3, BIT(0) & 0x3);
+	/*jtag*/
+	SYS_IOMUX_DOEN(36, HIGH);
+	SYS_IOMUX_DIN(36, 4);
+	SYS_IOMUX_DOEN(61, HIGH);
+	SYS_IOMUX_DIN(61, 19);
+	SYS_IOMUX_DOEN(63, HIGH);
+	SYS_IOMUX_DIN(63, 20);
+	SYS_IOMUX_DOEN(60, HIGH);
+	SYS_IOMUX_DIN(60, 29);
+	SYS_IOMUX_DOEN(44, 8);
+	SYS_IOMUX_DOUT(44, 22);
 
 	SYS_IOMUX_DOEN(62, LOW);
 	SYS_IOMUX_DOUT(62, 19);
