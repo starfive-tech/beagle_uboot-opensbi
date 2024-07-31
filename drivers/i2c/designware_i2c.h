@@ -204,7 +204,6 @@ struct dw_i2c {
 	bool has_spk_cnt;
 #if CONFIG_IS_ENABLED(CLK)
 	struct clk clk;
-	struct clk_bulk clks;
 #endif
 	struct dw_i2c_speed_config config;
 };
