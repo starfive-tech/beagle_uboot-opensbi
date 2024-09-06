@@ -775,14 +775,10 @@ int designware_i2c_of_to_plat(struct udevice *bus)
 	if (ret)
 		return ret;
 
-	ret = clk_get_bulk(bus, &priv->clks);
-	if (ret)
-	 return ret;
-
-	ret = clk_enable_bulk(&priv->clks);
+	ret = clk_enable(&priv->clk);
 	if (ret && ret != -ENOSYS && ret != -ENOTSUPP) {
-		clk_release_bulk(&priv->clks);
-		dev_err(bus, "failed to enable bulk clock\n");
+		clk_free(&priv->clk);
+		dev_err(bus, "failed to enable clock\n");
 		return ret;
 	}
 #endif
@@ -813,8 +809,8 @@ int designware_i2c_remove(struct udevice *dev)
 	struct dw_i2c *priv = dev_get_priv(dev);
 
 #if CONFIG_IS_ENABLED(CLK)
-	clk_disable_bulk(&priv->clks);
-	clk_release_bulk(&priv->clks);
+	clk_disable(&priv->clk);
+	clk_free(&priv->clk);
 #endif
 
 	return reset_release_bulk(&priv->resets);
