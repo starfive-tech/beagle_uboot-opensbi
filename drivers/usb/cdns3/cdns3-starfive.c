@@ -11,6 +11,7 @@
 #include <clk.h>
 #include <dm.h>
 #include <dm/device_compat.h>
+#include <dm/lists.h>
 #include <linux/usb/otg.h>
 #include <reset.h>
 #include <regmap.h>
